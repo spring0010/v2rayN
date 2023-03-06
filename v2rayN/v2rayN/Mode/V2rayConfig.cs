@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 
 namespace v2rayN.Mode
 {
@@ -25,7 +25,7 @@ namespace v2rayN.Mode
         /// 统计需要， 空对象
         /// </summary>
         public Stats stats { get; set; }
-       
+
         /// </summary>
         public API api { get; set; }
 
@@ -35,7 +35,7 @@ namespace v2rayN.Mode
         /// <summary>
         /// DNS 配置
         /// </summary>
-        public Dns dns { get; set; }
+        public object dns { get; set; }
         /// <summary>
         /// 路由配置
         /// </summary>
@@ -57,8 +57,8 @@ namespace v2rayN.Mode
 
     public class SystemPolicy
     {
-        public bool statsInboundUplink;
-        public bool statsInboundDownlink;
+        public bool statsOutboundUplink;
+        public bool statsOutboundDownlink;
     }
 
     public class Log
@@ -132,6 +132,16 @@ namespace v2rayN.Mode
         /// 
         /// </summary>
         public List<UsersItem> clients { get; set; }
+
+
+        /// <summary>
+        /// VLESS
+        /// </summary>
+        public string decryption { get; set; }
+
+        public bool allowTransparent { get; set; }
+
+        public List<AccountsItem> accounts { get; set; }
     }
 
     public class UsersItem
@@ -152,17 +162,22 @@ namespace v2rayN.Mode
         /// 
         /// </summary>
         public string security { get; set; }
+
+        /// <summary>
+        /// VLESS
+        /// </summary>
+        public string encryption { get; set; }
+
+        /// <summary>
+        /// VLESS
+        /// </summary>
+        public string flow { get; set; }
     }
     public class Sniffing
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public bool enabled { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
         public List<string> destOverride { get; set; }
+        public bool routeOnly { get; set; }
     }
 
     public class Outbounds
@@ -204,6 +219,16 @@ namespace v2rayN.Mode
         /// 
         /// </summary>
         public Response response { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string domainStrategy { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int? userLevel { get; set; }
     }
 
     public class VnextItem
@@ -251,6 +276,11 @@ namespace v2rayN.Mode
         /// 
         /// </summary>
         public int level { get; set; }
+
+        /// <summary>
+        /// trojan
+        /// </summary>
+        public string flow { get; set; }
 
         /// <summary>
         /// 
@@ -304,40 +334,16 @@ namespace v2rayN.Mode
         public List<string> servers { get; set; }
     }
 
-    public class RulesItem
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string type { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string port { get; set; }
-
-        public List<string> inboundTag { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string outboundTag { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public List<string> ip { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public List<string> domain { get; set; }
-    }
-
     public class Routing
     {
         /// <summary>
         /// 
         /// </summary>
         public string domainStrategy { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string domainMatcher { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -381,7 +387,16 @@ namespace v2rayN.Mode
         /// QUIC
         /// </summary>
         public QuicSettings quicSettings { get; set; }
-        
+
+        /// <summary>
+        /// VLESS xtls
+        /// </summary>
+        public TlsSettings xtlsSettings { get; set; }
+        /// <summary>
+        /// grpc
+        /// </summary>
+        public GrpcSettings grpcSettings { get; set; }
+
     }
 
     public class TlsSettings
@@ -395,14 +410,23 @@ namespace v2rayN.Mode
         /// 
         /// </summary>
         public string serverName { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<string> alpn
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// "chrome" | "firefox" | "safari" | "randomized"
+        /// </summary>
+        public string fingerprint { get; set; }
+
     }
 
     public class TcpSettings
     {
-        /// <summary>
-        /// 是否重用 TCP 连接
-        /// </summary>
-        public bool connectionReuse { get; set; }
         /// <summary>
         /// 数据包头部伪装设置
         /// </summary>
@@ -459,15 +483,14 @@ namespace v2rayN.Mode
         /// 
         /// </summary>
         public Header header { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string seed { get; set; }
     }
 
     public class WsSettings
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool connectionReuse { get; set; }
-
         /// <summary>
         /// 
         /// </summary>
@@ -484,6 +507,12 @@ namespace v2rayN.Mode
         /// 
         /// </summary>
         public string Host { get; set; }
+
+        /// <summary>
+        /// 用户代理
+        /// </summary>
+        [JsonProperty("User-Agent")]
+        public string UserAgent { get; set; }
     }
 
     public class HttpSettings
@@ -517,4 +546,25 @@ namespace v2rayN.Mode
         public Header header { get; set; }
     }
 
+    public class GrpcSettings
+    {
+        public string serviceName { get; set; }
+        public bool multiMode { get; set; }
+        public int idle_timeout { get; set; }
+        public int health_check_timeout { get; set; }
+        public bool permit_without_stream { get; set; }
+        public int initial_windows_size { get; set; }
+    }
+
+    public class AccountsItem
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string user { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string pass { get; set; }
+    }
 }

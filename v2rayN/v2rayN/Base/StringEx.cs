@@ -1,17 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 
 namespace v2rayN.Base
 {
     static class StringEx
     {
-        public static bool IsNullOrEmpty(this string value)
+        public static bool IsNullOrEmpty([NotNullWhen(false)] this string? value)
         {
             return string.IsNullOrEmpty(value);
         }
 
-        public static bool IsNullOrWhiteSpace(this string value)
+        public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? value)
         {
             return string.IsNullOrWhiteSpace(value);
         }
@@ -36,7 +35,7 @@ namespace v2rayN.Base
 
         public static IEnumerable<string> NonWhiteSpaceLines(this TextReader reader)
         {
-            string line;
+            string? line;
             while ((line = reader.ReadLine()) != null)
             {
                 if (line.IsWhiteSpace()) continue;
@@ -44,7 +43,7 @@ namespace v2rayN.Base
             }
         }
 
-        public static string TrimEx(this string value)
+        public static string TrimEx(this string? value)
         {
             return value == null ? string.Empty : value.Trim();
         }

@@ -10,8 +10,10 @@ namespace v2rayN.Mode
         port,
         security,
         network,
+        streamSecurity,
         subRemarks,
-        testResult,
+        delayVal,
+        speedVal,
 
         todayDown,
         todayUp,
